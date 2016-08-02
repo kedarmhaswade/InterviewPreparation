@@ -26,7 +26,6 @@ public class DuplicateNumberInArray {
 		System.out.println("Will \"ASSUME\" that the input is within some given range.");
 		System.out.println("And that range is 0 to size");
 		int[] count = new int[array.length + 1];
-		int c = 0;
 		System.out.println("Traverse the array once and populate the count for each element");
 		for (int i = 0; i < array.length; i++) {
 			count[array[i]] += 1;
@@ -36,6 +35,38 @@ public class DuplicateNumberInArray {
 				System.out.print(i + " ");
 			}
 		}
+	}
+
+	void printDuplicate3(int arr[], int size) {
+		int xor = arr[0];
+		int set_bit_no;
+		int i;
+		int n = size - 2;
+		int x = 0, y = 0;
+		for (i = 1; i < size; i++) {
+			xor ^= arr[i];
+		}
+		for (i = 1; i <= n; i++) {
+			xor ^= i;
+		}
+		set_bit_no = (xor & ~(xor - 1));
+		for (i = 0; i < size; i++) {
+			int a = arr[i] & set_bit_no;
+			if (a != 0)
+				x = x ^ arr[i];
+			else
+				y = y ^ arr[i];
+		}
+		for (i = 1; i <= n; i++) {
+			int a = i & set_bit_no;
+			if (a != 0)
+				x = x ^ i;
+			else
+				y = y ^ i;
+		}
+
+		System.out.println("The two reppeated elements are :");
+		System.out.println(x + " " + y);
 	}
 
 	public static void main(String[] args) {
