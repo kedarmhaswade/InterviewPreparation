@@ -1,48 +1,23 @@
 package com.preparation.dynamicprogramming;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class MinimumNoOfCoins {
 
-	public static Integer getMinCoins(Integer value, Integer[] availableCoinDenominations) {
+	public static Integer getMinCoins(int amount, Integer[] denominations) {
 		int coins = 0;
-		Arrays.sort(availableCoinDenominations, Collections.reverseOrder(new Comparator<Integer>() {
-			@Override
-			public int compare(Integer o1, Integer o2) {
-				int returnValue;
-				if (o1 == o2) {
-					returnValue = 0;
-				}
-				if (o1 > o2) {
-					returnValue = 1;
-				} else {
-					returnValue = -1;
-				}
-				return returnValue;
-			}
-		}));
-		int length = availableCoinDenominations.length;
-		while (value > 0) {
-			boolean found = false;
-			for (int i = 0; i < length; i++) {
-				if (availableCoinDenominations[i] <= value) {
-					found = true;
-					value -= availableCoinDenominations[i];
-					coins++;
-					break;
-				}
-			}
-			if (!found) {
-				coins++;
-				break;
-			}
-		}
+		Arrays.sort(denominations, (v1, v2) -> Integer.compare(v2, v1));
+        for (Integer denomination : denominations) { // reverse sorted iteration order
+            if (denomination > amount)
+                continue;  // if a denomination > amount, we can skip it
+            int cofi = amount / denomination; // # coins of denominations[i]
+            amount -= cofi * denomination; // reduce the amount proportionately
+            coins += cofi;
+        }
 		return coins;
 	}
 
-	public static int getMinCoins2(int value, int[] availbaleCoinDenominations) {
+	public static int getMinCoins2(int value, int[] denominations) {
 		// This is a very interesting solution.
 		// Create two arrays, of length = value + 1.
 		// That is each value between 1 to 'value' has an index in each of the
@@ -67,14 +42,14 @@ public class MinimumNoOfCoins {
 		// number of coins minimum for the total under consideration.
 
 		// The loop is run for all the available coin denominations.
-		for (int i = 0; i < availbaleCoinDenominations.length; i++) {
+		for (int i = 0; i < denominations.length; i++) {
 			// Check if this coin helps in building minimum coins for the
 			// total.
 			for (int j = 1; j <= value; j++) {
 				// check the ith coin can be useful to form the value of j.
-				if (j >= availbaleCoinDenominations[i]) {
-					if (valueArray[j - availbaleCoinDenominations[i]] + 1 < valueArray[j]) {
-						valueArray[j] = 1 + valueArray[j - availbaleCoinDenominations[i]];
+				if (j >= denominations[i]) {
+					if (valueArray[j - denominations[i]] + 1 < valueArray[j]) {
+						valueArray[j] = 1 + valueArray[j - denominations[i]];
 						resultArray[j] = i;
 					}
 				}
@@ -85,7 +60,7 @@ public class MinimumNoOfCoins {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(getMinCoins(7, new Integer[] { 1, 2, 3 }));
+		System.out.println(getMinCoins(18, new Integer[] { 1, 9, 10 }));
 		System.out.println(getMinCoins2(7, new int[] { 1, 2, 3 }));
 	}
 }
